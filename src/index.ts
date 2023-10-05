@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { UAV, UAVObj } from './models/UAV';
+import { setup } from './utils/mqtt';
 
 dotenv.config();
 
@@ -19,3 +20,5 @@ const uav: UAVObj = {
 	'1': new UAV(1),
 	'2': new UAV(2),
 };
+
+setup(uav);
