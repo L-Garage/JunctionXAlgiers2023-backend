@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
+import { UAV, UAVObj } from './models/UAV';
 
 dotenv.config();
 
@@ -13,3 +14,8 @@ app.get('/', (req: Request, res: Response) => {
 const server = app.listen(port, () => {
 	console.log(`Server is running at http://localhost:${port}`);
 });
+
+const uav: UAVObj = {
+	'1': new UAV(1),
+	'2': new UAV(2),
+};
