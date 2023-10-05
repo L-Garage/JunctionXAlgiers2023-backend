@@ -2,11 +2,13 @@ import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { UAV, UAVObj } from './models/UAV';
 import { setup } from './utils/mqtt';
+import WebSocket from 'ws';
 
 dotenv.config();
 
 const app = express();
 const port = parseInt(process.env.PORT) ?? 4000;
+const socketInterval = parseInt(process.env.SOCKET_INTERVAL) ?? 10000;
 
 app.get('/', (req: Request, res: Response) => {
 	res.send('API');
@@ -22,3 +24,22 @@ const uav: UAVObj = {
 };
 
 setup(uav);
+
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', ws => {
+	console.log(`[${new Date()}] client connected`);
+	ws.send(JSON.stringify(Array.from(Object.values(uav))));
+
+	const interval = setInterval(() => {
+		ws.send(JSON.stringify(Array.from(Object.values(uav))));
+	}, socketInterval);
+
+	ws.on('close', () => {
+		clearInterval(interval);
+	});
+
+	ws.on('message', msg => {
+		console.log(msg);
+	});
+});
