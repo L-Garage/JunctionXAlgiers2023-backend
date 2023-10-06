@@ -26,6 +26,7 @@ export const addVehicleSchema = z.object({
 	name: z.string().min(1, 'Name is required'),
 	type: z.number().min(0).max(1),
 	dataUrl: z.string().optional(),
+	dataSourceId: z.number().optional(),
 	videoUrl: z.string().optional(),
 });
 

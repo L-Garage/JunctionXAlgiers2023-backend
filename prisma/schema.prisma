@@ -32,6 +32,7 @@ model Vehicle {
     deletedAt    DateTime?
     user         User          @relation(fields: [userId], references: [id])
     userId       String
+    dataSourceId Int?
     dataUrl      String?
     videoUrl     String?
     gps          Gps?

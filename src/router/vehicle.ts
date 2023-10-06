@@ -7,7 +7,7 @@ import { ExpressRequest } from '../utils/types';
 const router = Router();
 
 router.post('/add', validateRequestSchema(addVehicleSchema), async (req: ExpressRequest, res: Response) => {
-	const { name, type, dataUrl, videoUrl }: AddVehicleSchemaType = req.body;
+	const { name, type, dataUrl, dataSourceId, videoUrl }: AddVehicleSchemaType = req.body;
 	const { id } = req.user!;
 
 	const vehicleExists = await db.vehicle.findFirst({ where: { name, userId: id } });
@@ -20,6 +20,7 @@ router.post('/add', validateRequestSchema(addVehicleSchema), async (req: Express
 			type,
 			dataUrl: dataUrl ?? null,
 			videoUrl: videoUrl ?? null,
+			dataSourceId: dataSourceId ?? null,
 			user: { connect: { id } },
 		},
 	});
