@@ -9,3 +9,60 @@ datasource db {
     provider = "sqlite"
     url      = "file:./dev.db"
 }
+
+model User {
+    id        String    @id @default(cuid())
+    email     String    @unique
+    name      String
+    password  String
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+    vehicles  Vehicle[]
+}
+
+// vehicle is based on UAV type
+model Vehicle {
+    id        String    @id @default(cuid())
+    name      String
+    type      Int
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+    user      User      @relation(fields: [userId], references: [id])
+    userId    String
+    gps       Gps?
+    battery   Battery?
+    status    Status?
+}
+
+model Gps {
+    id        String  @id @default(cuid())
+    latitude  Float
+    longitude Float
+    absolute  Float
+    relative  Float
+    fixation  Boolean
+    vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+    vehicleId String  @unique
+}
+
+model Battery {
+    id        Int     @id
+    voltage   Float
+    supply    Int
+    vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+    vehicleId String  @unique
+}
+
+model Status {
+    id          Int     @id
+    in_air      Boolean @default(false)
+    armed       Boolean @default(false)
+    state       Int
+    mav_msg     String
+    health      Int
+    flight_mode Int
+    vehicle     Vehicle @relation(fields: [vehicleId], references: [id])
+    vehicleId   String  @unique
+}
