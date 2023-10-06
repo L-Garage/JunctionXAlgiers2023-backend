@@ -5,7 +5,8 @@
 		"target": "es2016",
 		"module": "commonjs",
 		"esModuleInterop": true,
-		"types": ["node"]
+		"types": ["node"],
+		"strictNullChecks": true
 	},
 	"include": ["src/**/*.ts"],
 	"exclude": ["node_modules"]
