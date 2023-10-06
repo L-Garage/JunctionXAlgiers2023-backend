@@ -8,8 +8,8 @@ import router from './router';
 dotenv.config();
 
 const app = express();
-const port = parseInt(process.env.PORT) ?? 4000;
-const socketInterval = parseInt(process.env.SOCKET_INTERVAL) ?? 10000;
+const port = parseInt(process.env.PORT!) ?? 4000;
+const socketInterval = parseInt(process.env.SOCKET_INTERVAL!) ?? 10000;
 
 app.use(express.json());
 app.use('/', router);
