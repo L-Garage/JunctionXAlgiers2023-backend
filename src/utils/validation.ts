@@ -21,3 +21,12 @@ export const loginSchema = z.object({
 	email: z.string().email('Invalid email address'),
 	password: z.string().min(8, 'Password must be at least 8 characters'),
 });
+
+export const addVehicleSchema = z.object({
+	name: z.string().min(1, 'Name is required'),
+	type: z.number().min(0).max(1),
+	dataUrl: z.string().optional(),
+	videoUrl: z.string().optional(),
+});
+
+export type AddVehicleSchemaType = z.infer<typeof addVehicleSchema>;
