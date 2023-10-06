@@ -3,6 +3,8 @@ import db from '../utils/db';
 import { AddVehicleSchemaType, addVehicleSchema, validateRequestSchema } from '../utils/validation';
 import type { Vehicle } from '@prisma/client';
 import { ExpressRequest } from '../utils/types';
+import { uavs } from '../utils/uav';
+import { UAV } from '../models/UAV';
 
 const router = Router();
 
@@ -24,6 +26,10 @@ router.post('/add', validateRequestSchema(addVehicleSchema), async (req: Express
 			user: { connect: { id } },
 		},
 	});
+
+	if (vehicle.dataSourceId) {
+		uavs[vehicle.dataSourceId] = new UAV(vehicle.dataSourceId);
+	}
 
 	res.json({
 		success: true,

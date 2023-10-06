@@ -1,29 +1,38 @@
 import { connect } from 'mqtt';
 import { handleBat, handleGps, handleState } from './handlers';
-import { UAVObj } from '../models/UAV';
+import { UAV } from '../models/UAV';
+import db from './db';
 
-export const setup = (uav: UAVObj) => {
-	const client = connect('mqtt://13.38.173.241:1883');
+export const setupUAV = async (uavs: object) => {
+	const vehicles = await db.vehicle.findMany({});
 
-	client.on('connect', () => {
-		client.subscribe('#');
-	});
+	vehicles.forEach(vehicle => {
+		if (!vehicle.dataUrl || !vehicle.dataSourceId) return;
 
-	client.on('message', (topic, message) => {
-		const t = topic.replace(/uav\d\//, '');
-		const id = topic.replace(/uav(\d)\/.*/, '$1');
-		const subtopic = t.replace(/(gps|bat)\//, '');
+		uavs[vehicle.dataSourceId] = new UAV(vehicle.dataSourceId);
 
-		if (t.startsWith('bat')) {
-			return handleBat(uav, parseInt(id), subtopic, message.toString());
-		}
+		const client = connect(vehicle.dataUrl);
 
-		if (t.startsWith('gps')) {
-			handleGps(uav, parseInt(id), subtopic, message.toString());
-			// client.end();
-			return;
-		}
+		client.on('connect', () => {
+			client.subscribe('#');
+		});
 
-		return handleState(uav, parseInt(id), subtopic, message.toString());
+		client.on('message', (topic, message) => {
+			const t = topic.replace(/uav\d\//, '');
+			const dataSourceId = topic.replace(/uav(\d)\/.*/, '$1');
+			const subtopic = t.replace(/(gps|bat)\//, '');
+
+			if (t.startsWith('bat')) {
+				return handleBat(uavs, dataSourceId, subtopic, message.toString());
+			}
+
+			if (t.startsWith('gps')) {
+				handleGps(uavs, dataSourceId, subtopic, message.toString());
+				// client.end();
+				return;
+			}
+
+			return handleState(uavs, dataSourceId, subtopic, message.toString());
+		});
 	});
 };
