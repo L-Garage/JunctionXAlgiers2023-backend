@@ -30,3 +30,21 @@ export const addVehicleSchema = z.object({
 });
 
 export type AddVehicleSchemaType = z.infer<typeof addVehicleSchema>;
+
+export const addReservationSchema = z.object({
+	vehicleName: z.string().min(1, 'Vehicle name is required'),
+	startDate: z.string().min(1, 'Start date is required'),
+	endDate: z.string().min(1, 'Start date is required'),
+	bounds: z.object({
+		ne: z.object({
+			lat: z.number(),
+			lng: z.number(),
+		}),
+		sw: z.object({
+			lat: z.number(),
+			lng: z.number(),
+		}),
+	}),
+});
+
+export type AddReservationSchemaType = z.infer<typeof addReservationSchema>;

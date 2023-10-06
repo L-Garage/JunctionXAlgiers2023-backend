@@ -11,31 +11,34 @@ datasource db {
 }
 
 model User {
-    id        String    @id
-    email     String    @unique
-    name      String
-    password  String
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    deletedAt DateTime?
-    vehicles  Vehicle[]
+    id          String       @id
+    email       String       @unique
+    name        String
+    password    String
+    createdAt   DateTime     @default(now())
+    updatedAt   DateTime     @updatedAt
+    deletedAt   DateTime?
+    vehicles    Vehicle[]
+    Reservation Reservation?
 }
 
 // vehicle is based on UAV type
 model Vehicle {
-    id        String    @id @default(cuid())
-    name      String
-    type      Int
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    deletedAt DateTime?
-    user      User      @relation(fields: [userId], references: [id])
-    userId    String
-    dataUrl   String?
-    videoUrl  String?
-    gps       Gps?
-    battery   Battery?
-    status    Status?
+    id           String        @id @default(cuid())
+    name         String
+    type         Int
+    createdAt    DateTime      @default(now())
+    updatedAt    DateTime      @updatedAt
+    deletedAt    DateTime?
+    user         User          @relation(fields: [userId], references: [id])
+    userId       String
+    dataUrl      String?
+    videoUrl     String?
+    gps          Gps?
+    battery      Battery?
+    status       Status?
+    reservations Reservation[]
+    boundsId     String?
 }
 
 model Gps {
@@ -67,4 +70,15 @@ model Status {
     flight_mode Int
     vehicle     Vehicle @relation(fields: [vehicleId], references: [id])
     vehicleId   String  @unique
+}
+
+model Reservation {
+    id        String   @id @default(cuid())
+    startDate DateTime
+    endDate   DateTime
+    vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+    vehicleId String   @unique
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String   @unique
+    bounds    String   @unique
 }
