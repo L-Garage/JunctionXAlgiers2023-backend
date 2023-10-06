@@ -1,11 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import { verifyToken } from './jwt';
+import { ExpressRequest } from './types';
 
-export const auth = async (req: Request, res: Response, next: NextFunction) => {
+export const auth = async (req: ExpressRequest, res: Response, next: NextFunction) => {
 	if (!req?.headers?.authorization) return res.status(401).json({ success: false, error: 'Invalid token' });
 
 	try {
-		verifyToken(req?.headers?.authorization?.replace('Bearer ', ''));
+		const payload = verifyToken(req?.headers?.authorization?.replace('Bearer ', ''));
+		req.user = payload;
 		next();
 	} catch (error) {
 		return res.status(401).json({ success: false, error: 'Invalid token' });
