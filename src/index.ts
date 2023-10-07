@@ -27,8 +27,8 @@ const wss = new WebSocket.Server({ server });
 
 const sendUAVData = async (ws: WebSocket, userId: User['id']) => {
 	const vehicles = await db.vehicle.findMany({ where: { userId } });
-	const vehicleIds = vehicles.map(vehicle => vehicle.dataSourceId).filter(e => !!e) as number[];
-	const data = vehicleIds.map(id => getUAV(id!));
+	const v = vehicles.map(vehicle => ({ name: vehicle.name, id: vehicle.dataSourceId })).filter(e => !!e);
+	const data = v.map(({ id, name }) => ({ name, ...getUAV(id!) })).filter(e => !!e.id);
 	ws.send(JSON.stringify(data));
 };
 
