@@ -7,6 +7,7 @@ import { verifyToken } from './utils/jwt';
 import db from './utils/db';
 import { getUAV, uavs } from './utils/uav';
 import { User, Vehicle } from '@prisma/client';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ const port = parseInt(process.env.PORT!) ?? 4000;
 const socketInterval = parseInt(process.env.SOCKET_INTERVAL!) ?? 10000;
 
 app.use(express.json());
+app.use(cors({ origin: '*' }));
 app.use('/', router);
 
 const server = app.listen(port, () => {
